@@ -1,0 +1,14 @@
+La siguiente serie de paso recide en la creación de un repetidor de señal WiFi por medio de un raspberry pi,
+para ser mas concretos, con el modelo Raspberry pi zero W. Como sabemos por medio de la datasheet del fabricante
+esta placa cuenta con conexión WiFi y bluetooth que se puede encontrar por el modico precio de $12.85 dólares 
+americanos, por lo que el factor del precio se vuelve una opción muy rentable debido a los costos que se encuentran
+en el mercado por un repetidor que facilmente son el doble o muchas veces hasta más, claro no se cuenta con la misma
+potencia pero, sabemos las demas tantas funcionalidades que se pueden desarrollar con esta placa.
+Este proyecto es único en su tipo porque la mayoría de los proyectos en GitHub demuestran cómo crear un AP inalámbrico 
+para compartir el acceso a Internet obtenido mediante Ethernet en nuestro caso usaremos un solo adaptador WiFi USB ya 
+que estoy usando Raspberry Pi Zero W.
+
+El primer paso para este proceso es la descargá del siguiente programa de preferencia aunque pueden ocupar el que deseen
+para montar la imagen ISO a una memoria SD. https://www.balena.io/etcher/ link de descargá del SW.
+Luegon procedemos a descargar Raspbian Strech Lite, desde el sitio oficial de Raspberry 
+https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&ved=2ahUKEwjsmO3oy_rwAhXFJt8KHVn_AZIQFjAAegQIAxAD&url=https%3A%2F%2Fdownloads.raspberrypi.org%2Fraspbian_lite_latest&usg=AOvVaw3nM59_GcZwSS_bcdPJ7Ldn
