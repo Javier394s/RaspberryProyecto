@@ -12,3 +12,32 @@ El primer paso para este proceso es la descargá del siguiente programa de prefe
 para montar la imagen ISO a una memoria SD. https://www.balena.io/etcher/ link de descargá del SW.
 Luegon procedemos a descargar Raspbian Strech Lite, desde el sitio oficial de Raspberry 
 https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&ved=2ahUKEwjsmO3oy_rwAhXFJt8KHVn_AZIQFjAAegQIAxAD&url=https%3A%2F%2Fdownloads.raspberrypi.org%2Fraspbian_lite_latest&usg=AOvVaw3nM59_GcZwSS_bcdPJ7Ldn
+
+Luego de montar el sistema operativo en la SD booteada, procedemos a crear un archivo de texto plano sin extensión llamado
+'ssh' para luego en la misma partición crear otro archivo llamado 'wpa_supplicant.conf'. Asegurarse que el ultimo no tenga 
+la extensión .txt, y abrirlo. En nuestro caso lo abriremos con Notepad++ y pegar el siguiente contenido de configuración.
+
+  ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+  update_config=1
+  country=IN
+
+  network={
+  ssid="mywifissid"
+  psk="mywifipassword"
+  key_mgmt=WPA-PSK
+  }
+
+Reemplace el nombre de ssid por le nombre del Wifi al que desea generar la señal principal a repetir y psk con la contraseña
+de la red.
+Como siguiente paso hay que encender el Raspberry para que se conecte a la red antes configurada para conocer la IP del Raspberry.
+Luego de conocer la IP procedemos a logearnos al sistema del raspberry con una herramienta llamada PuTTY link de descarga:
+https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html
+Ingresamos la IP y le damos connect, para despues poner en user ssh pi@raspberrypi.local o si en caso de que no funcione puede
+probar con pi y por consiguiente ingresar la contraseña: raspberry
+Finalmente actualizamos los paquetes y mejoramos los paquetes agregando los ultimos.
+
+sudo apt update -y
+sudo apt upgrade -y
+
+Por último reiniciamos el Raspberry 
+sudo reboot
