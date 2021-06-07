@@ -36,8 +36,116 @@ Ingresamos la IP y le damos connect, para despues poner en user ssh pi@raspberry
 probar con pi y por consiguiente ingresar la contraseña: raspberry
 Finalmente actualizamos los paquetes y mejoramos los paquetes agregando los ultimos.
 
-sudo apt update -y
-sudo apt upgrade -y
+  sudo apt update -y
+  sudo apt upgrade -y
 
 Por último reiniciamos el Raspberry 
-sudo reboot
+
+  sudo reboot
+
+CONFIGURAREMOS systemd-networkd (systemd-networkd es un demonio del sistema que administra configuraciones de red. 
+Detecta y configura los dispositivos de red a medida que aparecen; también puede crear dispositivos de red virtual)
+
+Para minimizar la necesidad de paquetes adicionales, networkdse utiliza ya que ya está integrado en el initsistema, por lo tanto, 
+no es necesario dhcpcd. Entonces impediremos el uso de dhpcd.
+
+  sudo systemctl mask networking.service dhcpcd.service
+  sudo mv /etc/network/interfaces /etc/network/interfaces~
+  sudo sed -i '1i resolvconf=NO' /etc/resolvconf.conf
+
+Utilizamos el systemd-networkd
+
+  sudo systemctl enable systemd-networkd.service systemd-resolved.service
+  sudo ln -sf /run/systemd/resolve/resolv.conf /etc/resolv.conf
+
+Configuracion de wpa-suplicant
+
+wlan0 como AP (access point)
+
+Comando para crear un nuevo archivo
+  sudo nano /etc/wpa_supplicant/wpa_supplicant-wlan0.conf
+ 
+Le escribimos los siguientes comandos al archivo
+  Country=SV
+  ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+  update_config=1
+
+  network={ ssid="TestRaspberry" mode=2 key_mgmt=WPA-PSK psk="12345678" frequency=2412 } 
+  (se puede cambiar nombre del AP y contraseña)
+  
+Este archivo de configuración se utilizará para el adaptador wifi integrado wlan0que se utilizará para crear un punto de acceso inalámbrico.
+Procedemos a otorgar permisos de lectura y escritura al usuario.
+  
+  sudo chmod 600 /etc/wpa_supplicant/wpa_supplicant-wlan0.conf
+
+
+Reiniciamos el servicio wpa_supplicant 
+
+  sudo systemctl disable wpa_supplicant.service
+  sudo systemctl enable wpa_supplicant@wlan0.service
+  
+wlan1 como cliente
+
+Creamos un nuevo archivo
+
+  sudo nano /etc/wpa_supplicant/wpa_supplicant-wlan1.conf
+
+Agregamos el siguiente contenido y guardamos el archivo
+
+  country=SV
+  ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+  update_config=1
+
+  network={ ssid="A70" psk="jajajaja" } //Cambie el nombre y contraseña adecuado para el router al que desea replicar
+  
+Este archivo de configuración se utilizará para el adaptador WiFi USB wlan01que se utilizará para conectarse a un enrutador inalámbrico.
+Procedemos a otorgar permisos de lectura y escritura al usuario.
+
+  sudo chmod 600 /etc/wpa_supplicant/wpa_supplicant-wlan1.conf
+  
+Reiniciar el  servicio wpa_supplicant
+
+  sudo systemctl disable wpa_supplicant.service
+  sudo systemctl enable wpa_supplicant@wlan1.service
+  
+Ahora configuramos las interfaces
+
+Cree un nuevo archivo usando el comando.
+
+  sudo nano /etc/systemd/network/08-wlan0.network
+  
+Agregamos el siguiente contenido y guardamos el archivo
+
+  [Match]
+  Name=wlan0
+  [Network]
+  Address=192.168.7.1/24
+  IPMasquerade=yes
+  IPForward=yes
+  DHCPServer=yes
+  [DHCPServer]
+  DNS=1.1.1.1
+  
+  
+Cree un nuevo archivo usando el comando.
+
+  sudo nano /etc/systemd/network/12-wlan1.network
+  
+Agregamos el siguiente contenido y guardamos el archivo
+
+  [Match]
+  Name=wlan1
+  [Network]
+  DHCP=yes
+  
+  
+Reinicie la Raspberry Pi usando sudo reboot
+Listo, esperar que encienda el Hotspot inalambrico.
+
+  
+  
+
+  
+
+  
+  
